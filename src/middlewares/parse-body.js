@@ -6,8 +6,8 @@ function parseRequestBody(request) {
         chunks.push(chunk);
       });
       request.on("end", () => {
-          console.log("🚀 ~ file: parse-body.js ~ line 10 ~ request.on ~ chunks", chunks)
-        resolve(chunks);
+        request.body = chunks;
+        resolve();
       });
     });
   } catch (err) {

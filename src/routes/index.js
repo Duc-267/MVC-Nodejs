@@ -1,13 +1,11 @@
 import taskRouter from "./tasks.js";
+import signUpRouter from "./signUp.js";
+import logInRouter from "./logIn.js";
 
-function route(request, response) {
-  const endpoint = request.url.split("/")[1];
-  if (endpoint == "tasks") {
-    taskRouter(request, response);
-  } else {
-    response.statusCode = 404;
-    response.end("404 Not Found");
-  }
+function route(app) {
+  app.use("/tasks", taskRouter);
+  app.use("/sign-up", signUpRouter);
+  app.use("/log-in", logInRouter);
 }
 
 export default route;

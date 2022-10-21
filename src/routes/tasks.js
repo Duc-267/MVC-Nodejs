@@ -1,23 +1,26 @@
+
 import TaskController from "../app/controller/TaskController.js";
+import express from "express";
 
-function taskRouter(request, response) {
-  if (request.url.match(/\/tasks\/\d+/)) {
-    const id = request.url.split("/")[2];
-    if (request.method === "GET") {
-      TaskController.getTaskById(id, request, response);
-    } else if (request.method === "PUT") {
-      TaskController.putTaskById(id, request, response);
-    } else if (request.method === "PATCH") {
-      TaskController.patchTaskById(id, request, response);
-    } else if (request.method === "DELETE") {
-      TaskController.deleteTaskById(id, request, response);
-    }
-  }
-  if (request.method === "GET") {
-    TaskController.getTasks(request, response);
-  } else if (request.method === "POST") {
-    TaskController.postTask(request, response);
-  }
-}
+var router = express.Router();
 
-export default taskRouter;
+router.get("/:id", (req, res) => {
+    TaskController.getTaskById(req, res);
+});
+router.put("/:id", (req, res) => {
+    TaskController.putTaskById(req, res);
+});
+router.patch("/:id", (req, res) => {
+    TaskController.patchTaskById(req, res);
+});
+router.delete("/:id", (req, res) => {
+    TaskController.deleteTaskById(req, res);
+});
+router.get("/", (req, res) => {
+    TaskController.getTasks(req, res);
+});
+router.post("/", (req, res) => {
+    TaskController.postTask(req, res);
+});
+
+export default router;

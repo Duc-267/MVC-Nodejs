@@ -1,5 +1,4 @@
 import Task from "../models/Task.js";
-import { parseRequestBody } from "../../middlewares/parse-body.js";
 
 const TaskController = {
   //[GET] /tasks
@@ -11,22 +10,20 @@ const TaskController = {
 
   //[POST] /tasks
   postTask: (request, response) => {
-    parseRequestBody(request).then((task) => {
-      task = JSON.parse(task);
-      task.isDone = false;
-      const newTask = new Task(task);
-      newTask
-        .save()
-        .then(() => {
-          console.log("New task is stored");
-          response.end();
-        })
-        .catch((err) => console.log(err));
-    });
+    const task = request.body;
+    const newTask = new Task(task);
+    newTask
+      .save()
+      .then(() => {
+        console.log("New task is stored");
+        response.end();
+      })
+      .catch((err) => console.log('error:', err));
   },
 
-  //  //[GET] /tasks/:id
-  getTaskById: (id, request, response) => {
+  //[GET] /tasks/:id
+  getTaskById: (request, response) => {
+    const id = request.params.id;
     Task.findById(id)
       .lean()
       .then((task) => response.end(JSON.stringify(task)))
@@ -34,20 +31,20 @@ const TaskController = {
   },
 
   //[PUT] /tasks/:id
-  putTaskById: (id, request, response) => {
-    parseRequestBody(request).then((task) => {
-      task = task.toString()
-      Task.findByIdAndUpdate(id, { name: task })
-        .then(() => {
-          console.log(`Task ${id} is updated`);
-          response.end();
-        })
-        .catch((err) => console.log(err));
-    });
+  putTaskById: (request, response) => {
+    const id = request.params.id;
+    let task = request.body;
+    Task.findByIdAndUpdate(id, { name: task })
+      .then(() => {
+        console.log(`Task ${id} is updated`);
+        response.end();
+      })
+      .catch((err) => console.log(err));
   },
 
   //  //[PATCH] /tasks/:id
-  patchTaskById: (id, request, response) => {
+  patchTaskById: (request, response) => {
+    const id = request.params.id;
     Task.findByIdAndUpdate(id, { isDone: true })
       .then(() => {
         console.log(`Task ${id} is set to be done`);
@@ -57,7 +54,8 @@ const TaskController = {
   },
 
   //  //[DELETE] /tasks/:id
-  deleteTaskById: (id, request, response) => {
+  deleteTaskById: (request, response) => {
+    const id = request.params.id;
     Task.findByIdAndDelete(id)
       .then(() => {
         console.log(`Task ${id} is deleted`);
