@@ -1,11 +1,9 @@
 import taskRouter from "./tasks.js";
-import signUpRouter from "./signUp.js";
-import logInRouter from "./logIn.js";
+import userRouter from "./user.js";
 
 function route(app) {
   app.use("/tasks", taskRouter);
-  app.use("/sign-up", signUpRouter);
-  app.use("/log-in", logInRouter);
+  app.use("/user", userRouter);
 }
 
 export default route;

@@ -33,7 +33,7 @@ const TaskController = {
   //[PUT] /tasks/:id
   putTaskById: (request, response) => {
     const id = request.params.id;
-    let task = request.body;
+    const task = request.body;
     Task.findByIdAndUpdate(id, { name: task })
       .then(() => {
         console.log(`Task ${id} is updated`);

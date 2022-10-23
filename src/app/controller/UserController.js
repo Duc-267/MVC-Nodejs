@@ -1,8 +1,10 @@
 import { insertUser, verifyUser } from "./helpers.js";
+import Image from "../models/Image.js";
 import jwt from "jsonwebtoken";
+import fs from "fs";
 
 const UserController = {
-  //[POST] /sign-up
+  //[POST] user/sign-up
   signUp: (request, response) => {
     const user = request.body;
     insertUser(user)
@@ -13,7 +15,7 @@ const UserController = {
       .catch((err) => console.log("error:", err));
   },
 
-  //[POST] /log-in
+  //[POST] user/log-in
   logIn: (request, response) => {
     const user = request.body;
     verifyUser(user)
@@ -34,6 +36,37 @@ const UserController = {
         response.end("Username or password is not correct.");
       });
   },
-};
+
+  //[GET] user/upload
+  uploadAvatarScreen: (request, response) => {
+    response.sendFile("upload.html", { root: "./src/views" });
+  },
+  
+  //[POST] user/avatar/upload
+  uploadAvatar: (request, response) => {
+    var img = fs.readFileSync(request.file.path);
+    var encode_image = img.toString('base64');
+    var finalImg = {
+      img:  Buffer.from(img, 'base64')
+    };
+    const newImage = new Image(finalImg);
+    newImage.save()
+    .then(() => {
+      console.log("New image is stored");
+      response.end();
+    })
+    .catch((err) => console.log("error:", err));
+    response.end();
+  },
+
+  //[GET] user/avatar
+  getAvatar: (request, response) => {
+    Image.findById('6354cad483bdfa24f0f741d3')
+    .then((image) => {
+      response.send( `<img src="data:image/jpg;base64, ${image.img.toString('base64')}" />`);
+    })
+    .catch((err) => console.log("error:", err));
+  }
+}
 
 export default UserController;
